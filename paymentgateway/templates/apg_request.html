@@ -1,0 +1,94 @@
+<style>
+    .body-style
+    {
+        background-image:url('{{ host_url }}/static/apg-logo.png');
+        background-repeat:no-repeat;
+        background-size:100%;
+    }
+</style>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+<body class="body-style">
+    <div class="container" style="margin-top: 5%; margin-left: 40%;">
+        <div class="row">
+            <input id="Key1" name="Key1" type="hidden" value="{{ merchant_key1 }}">
+            <input id="Key2" name="Key2" type="hidden" value="{{ merchant_key2 }}">
+            <form action="{{ html_url }}" id="PageRedirectionForm" method="post" novalidate="novalidate">
+                <input id="AuthToken" name="AuthToken" type="hidden" value="{{ auth_token }}">
+                <input id="RequestHash" name="RequestHash" type="hidden" value="">
+                <input id="ChannelId" name="ChannelId" type="hidden" value="{{ channel_id }}">
+                <input id="Currency" name="Currency" type="hidden" value="PKR">
+                <input id="IsBIN" name="IsBIN" type="hidden" value="0">
+                <input id="ReturnURL" name="ReturnURL" type="hidden" value="{{ host_url }}/apg_response/{{ txn_ref_no }}/">
+                <input id="MerchantId" name="MerchantId" type="hidden" value="{{ merchant_id }}">
+                <input id="StoreId" name="StoreId" type="hidden" value="{{ store_id }}">
+                <input id="MerchantHash" name="MerchantHash" type="hidden" value="{{ merchant_hash }}">
+                <input id="MerchantUsername" name="MerchantUsername" type="hidden" value="{{ merchant_username }}">
+                <input id="MerchantPassword" name="MerchantPassword" type="hidden" value="{{ merchant_password }}">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="TransactionTypeId">Transaction Type</label>
+                            <select class="form-control" autocomplete="off" id="TransactionTypeId" name="TransactionTypeId">
+                                <option value="">Select Transaction Type</option>
+                                <option value="1">Alfa Wallet</option>
+                                <option value="2">Alfalah Bank Account</option>
+                                <option value="3">Credit/Debit Card</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="TransactionReferenceNumber">Transaction Ref #</label>
+                            <input class="form-control" readonly autocomplete="off" id="TransactionReferenceNumber" name="TransactionReferenceNumber" placeholder="Order ID" type="text" value="{{ txn_ref_no }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="TransactionAmount">Amount</label>
+                            <input class="form-control" readonly autocomplete="off" id="TransactionAmount" name="TransactionAmount" placeholder="Transaction Amount" type="text" value="{{ transaction_amount }}">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-info" id="run">Process Payment</button>
+             </form>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    $(function () {
+
+        $("#run").click(function (e) {
+            e.preventDefault();
+            submitRequest("PageRedirectionForm");
+            document.getElementById("PageRedirectionForm").submit();
+        });
+    });
+
+    function submitRequest(formName) {
+
+        var mapString = '', hashName = 'RequestHash';
+
+
+        $("#" + formName+" :input").each(function () {
+            if ($(this).attr('id') != '') {
+                mapString += $(this).attr('id') + '=' + $(this).val() + '&';
+            }
+        });
+
+        $("#" + hashName).val(CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(mapString.substr(0, mapString.length - 1)), CryptoJS.enc.Utf8.parse($("#Key1").val()),
+        {
+            keySize: 128 / 8,
+            iv: CryptoJS.enc.Utf8.parse($("#Key2").val()),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        }));
+    }
+ </script>
+
+

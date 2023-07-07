@@ -1,0 +1,75 @@
+<html>
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="{{html_url}}"
+                data-complete="{{host_url}}?transaction_id={{order_id}}"
+                data-error="{{host_url}}?transaction_id={{order_id}}"
+                data-cancel="{{payment.x_url_cancel}}"
+                >
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <script type="text/javascript">
+            function errorCallback(error) {
+                  confirm('Are you sure you want to Error');
+            }
+            function cancelCallback() {
+                  confirm('Are you sure you want to cancel?');
+            }
+               Checkout.configure({
+                        merchant: "{{merchant_id}}",
+                        session: {
+                          id: "{{session_id}}"
+                        },
+                        order: {
+                            amount: "{{payment.x_amount}}",
+                            currency: "{{payment.x_currency}}",
+
+                            description: 'Limelight',
+                            id: "{{order_id}}",
+                        },
+                        shipping: {
+                            address: {
+                                street: '{{payment.x_customer_shipping_address1}}',
+                                city: '{{payment.x_customer_shipping_city}}'
+                            }
+                        },
+                        customer: {
+                            email: '{{email}}',
+                            firstName: '{{payment.x_customer_first_name}}',
+                            lastName: '{{payment.x_customer_last_name}}'
+                        },
+                        interaction: {
+                            merchant: {
+                                name: '{{ merchant.brand_name }}',
+                                logo: '{{client_logo}}'
+                            },
+                            displayControl: {
+                                billingAddress: 'HIDE',
+                                customerEmail: 'HIDE',
+                                shipping: 'HIDE'
+                            }
+                        }
+
+            });
+        </script>
+        <script>
+        $(window).on("load",function() {
+
+    console.log("{{session_id}}")
+            Checkout.showLightbox()
+            // Checkout.showPaymentPage()
+
+
+});
+
+    </script>
+        <img style="margin-left: 33% ;margin-top: 13%;" id="logo" src="https://s3.amazonaws.com/shopify-managemant-app/loading_icon.gif">
+</head>
+    <body>
+
+
+    </body>
+</html>
+
+

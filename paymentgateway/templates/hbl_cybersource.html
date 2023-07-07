@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="submitForm()">
+	<form name="jsform" id="payment_confirmation" action="https://secureacceptance.cybersource.com/pay" method="post"/>
+        <input type="hidden" name="pp_Version" value="2.0" />
+		<input type="hidden" name="pp_TxnType" value="" />
+		<input type="hidden" name="pp_Language" value="EN" />
+		<input type="hidden" name="pp_MerchantID" value="{{ pp_MerchantID }}" />
+		<input type="hidden" name="pp_SubMerchantID" value="" />
+		<input type="hidden" name="pp_Password" value="{{ pp_Password }}" />
+		<input type="hidden" name="pp_BankID" value="" />
+		<input type="hidden" name="pp_ProductID" value="">
+        <input type="hidden" name="pp_IsRegisteredCustomer" value="Yes">
+        <input type="hidden" name="pp_TokenizedCardNumber" value="">
+		<input type="hidden" name="pp_TxnRefNo" value="{{ pp_TxnRefNo }}" />
+		<input type="hidden" name="pp_Amount" value="{{ pp_Amount }}" />
+		<input type="hidden" name="pp_TxnCurrency" value="PKR" />
+		<input type="hidden" name="pp_TxnDateTime" value="{{ pp_TxnDateTime }}" />
+		<input type="hidden" name="pp_BillReference" value="{{ pp_BillReference }}" />
+		<input type="hidden" name="pp_Description" value="{{ pp_Description }}" />
+		<input type="hidden" name="pp_TxnExpiryDateTime" value="{{ pp_TxnExpiryDateTime }}" />
+		<input type="hidden" name="pp_ReturnURL" value="{{ callback_url }}" />
+		<input type="hidden" name="pp_SecureHash" value="" />
+		<input type="hidden" name="ppmpf_1" value="1" />
+		<input type="hidden" name="ppmpf_2" value="2" />
+		<input type="hidden" name="ppmpf_3" value="3" />
+		<input type="hidden" name="ppmpf_4" value="4" />
+		<input type="hidden" name="ppmpf_5" value="5" />
+	</form>
+</body>
+<script>
+function submitForm()
+{
+  document.jsform.submit();
+}
+</script>
+
+</html>

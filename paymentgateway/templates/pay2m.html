@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay2m</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <form action="{{gateway_url}}" method="post" name="frmPayment" id="jsform">
+
+        <input name="MERCHANT_ID" type="hidden" value="{{MERCHANT_ID}}" />
+        <input name="MERCHANT_NAME" type="hidden" value="{{MERCHANT_NAME}}" />
+        <input name="TOKEN" type="hidden" value="{{TOKEN}}" />
+        <input name="PROCCODE" type="hidden" value="{{PROCCODE}}" />
+        <input name="TXNAMT" type="hidden" value="{{TXNAMT}}" />
+        <input name="CUSTOMER_MOBILE_NO" type="hidden" value="{{CUSTOMER_MOBILE_NO}}" />
+        <input name="CUSTOMER_EMAIL_ADDRESS" type="hidden" value="{{CUSTOMER_EMAIL_ADDRESS}}" />
+        <input name="SIGNATURE" type="hidden" value="{{SIGNATURE}}" />
+        <input name="VERSION" type="hidden" value="{{VERSION}}" />
+        <input name="TXNDESC" type="hidden" value="{{TXNDESC}}" />
+        <input name="SUCCESS_URL" type="hidden" value="{{SUCCESS_URL}}" />
+        <input name="FAILURE_URL" type="hidden" value="{{FAILURE_URL}}" />
+        <input name="BASKET_ID" type="hidden" value="{{BASKET_ID}}" />
+        <input name="ORDER_DATE" type="hidden" value="{{ORDER_DATE}}" />
+        <input name="CHECKOUT_URL" type="hidden" value="{{CHECKOUT_URL}}" />
+    </form>
+</body>
+<script>
+$(document).ready(function(){
+    $("#jsform").submit()
+})
+</script>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div style=" font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; ">
+            <img  src="https://d109eq6v2p18ca.cloudfront.net/products/product_images/logo%20(1)%201.png" alt="logo">
+            <table>
+                <tbody style="width: 100%">
+                <tr>
+                    <td style="padding-top: 10px">
+                    <div class=" nav-bar-left " style="bottom: 0">
+                        <div><span style="font-size: 22px; font-weight: bold;">INVOICE</span></div>
+                        <p style="font-size: 18px; font-weight: bold;">Invoice No. :{{order_number}}</p>
+                    </div>
+                    </td>
+                    <td style="padding-top: 10px;">
+                       <div class=" nav-bar-right " style=" font-size: 14px; text-align: right;" >
+                        <p>Phone: +974 6660 5252</p>
+                        <p>Email: <a href="/" style="color: #ffc107; text-decoration: none;">contact@kees.qa</a></p>
+                       </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <hr style="border: 1px solid lightgrey;">
+            <table style="width: 100%;">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class=" info ">
+                               <p style=" margin-top: 25px; margin-bottom: 0; font-size: 15px;" >BILLED TO:</p>
+                               <p style=" font-weight: 900; font-size: 19px; margin-bottom: 0; margin-top: 10px; ">KEES</p>
+                               <p style="margin-bottom: 0; margin-top: 10px; font-size: 15px;">{{customer_phone}} {{customer_name}}</p>
+                               <p style="margin-top: 10px; font-size: 15px;">Email: <a href="/" style=" color: black; text-decoration: none;">{{customer_email}}</a></p>
+                           </div>
+                        </td>
+                        <td style="padding-top: 55px;">
+                           <div class=" date-sec " style="font-size: 16px;  text-align: right">
+                               <p><b>Date of Invoice: </b><span>{{date}}</span></p>
+                           </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style="width: 100%;  border-collapse: collapse;">
+                <div>
+                    <thead>
+                        <tr style=" width: 100%; font-weight: bold; font-size: 12px; background-size: auto; background-color: #E8E8E8;   border-collapse: collapse;">
+                            <th style="padding: 8px 0 3px 0;" >
+                                <p>IMAGE</p>
+                            </th>
+                            <th style="padding: 8px 0 3px 0;" >
+                                <p >ITEMS</p>
+                            </th>
+                            <th style="padding: 8px 0 3px 0;">
+                                <p>SKU</p>
+                            </th>
+                            <th style="padding: 8px 0 3px 0;">
+                                <p>QUANTITY</p>
+                            </th>
+                            <th style="padding: 8px 0 3px 0;">
+                                <P>BASE COST</P>
+                            </th>
+                            <th style="background-color: lightgrey; padding: 8px 0 3px 0;">
+                                <p >SUB TOTAL</p>
+                            </th>
+                            <th style="padding: 8px 0 5px 0;">
+                                <p >DISCOUNT</p>
+                            </th>
+                            <th style="background-color: #ffc107; color: white; padding: 8px 0 3px 0; ">
+                                <p>TOTAL</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{product_list}}
+                    </tbody>
+                </div>
+            </table>
+
+            <div class=" subtotal " style="font-size: 16px;  ">
+                <div style=" border-bottom: 1px solid lightgray; text-align: right; padding: 8px 0 4px 0;" ><pre style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><span>SUBTOTAL                  </span><span style="padding-left: 20px; ">{{subtotal}}</span></pre></div>
+            </div>
+            </div>
+        <div class=" subtotal " style="  font-size: 16px;  ">
+            <div style=" border-bottom: 1px solid lightgray;  text-align: right; padding: 6px;"><pre style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><span>DELIVERY CHARGES                  </span><span>{{shipping}}</span></pre></div>
+        </div>
+        <div class=" subtotal " style="  font-size: 16px;  ">
+            <div style="  text-align: right; padding: 6px;"><pre style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><span>GRAND TOTAL        </span><span>{{total_price}} QAR</span></pre></div>
+        </div>
+        <div>
+            <h1 style="font-size: 30px;">Thank You!</h1>
+        </div>
+        <br>
+        <div class=" notice " style=" border-collapse: collapse; ">
+            <p style=" margin-left: 10px;  font-weight: bold; font-size: 15px">NOTICE:</p>
+            <div style=" border-left: thick solid #009dff; font-size: 14px; margin-left: 10px;"><p style="padding-left: 10px;">Unless otherwise stated, tax on this invoice is not payable under reverse charge. Supplies under reverse charge are to be mentioned
+                separately.</p></div>
+        </div>
+        <div style=" bottom: 0; ">
+            <p style=" border-top: 1px solid #E8E8E8; margin-top: 100px; padding-top: 10px; text-align: center; font-size: 13px; ">Invoice was created on a computer and is valid without the signature and seal.</p>
+        </div>
+    </div>
+    </body>
+</html>

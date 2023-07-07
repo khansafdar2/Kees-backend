@@ -1,0 +1,9 @@
+/venv
+/newvenv
+log.django
+Dockercommands
+.env
+.gitignore
+.git
+Dockerfile
+.idea

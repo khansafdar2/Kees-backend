@@ -1,0 +1,97 @@
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+<body onload="submitForm()">
+   <input id="Key1" name="Key1" type="hidden" value="{{ merchant_key1 }}">
+   <input id="Key2" name="Key2" type="hidden" value="{{ merchant_key2 }}">
+   <form action="{{ html_url }}" id="HandshakeForm" method="post">
+      <input id="HS_RequestHash" name="HS_RequestHash" type="hidden" value="">
+      <input id="HS_IsRedirectionRequest" name="HS_IsRedirectionRequest" type="hidden" value="1">
+      <input id="HS_ChannelId" name="HS_ChannelId" type="hidden" value="{{ channel_id }}">
+      <input id="HS_ReturnURL" name="HS_ReturnURL" type="hidden" value="{{ host_url }}/apg_request/{{ txn_ref_no }}/">
+      <input id="HS_MerchantId" name="HS_MerchantId" type="hidden" value="{{ merchant_id }}">
+      <input id="HS_StoreId" name="HS_StoreId" type="hidden" value="{{ store_id }}">
+      <input id="HS_MerchantHash" name="HS_MerchantHash" type="hidden" value="{{ merchant_hash}}">
+      <input id="HS_MerchantUsername" name="HS_MerchantUsername" type="hidden" value="{{ merchant_username }}">
+      <input id="HS_MerchantPassword" name="HS_MerchantPassword" type="hidden" value="{{ merchant_password }}">
+      <input id="HS_TransactionReferenceNumber" name="HS_TransactionReferenceNumber" type="hidden" placeholder="Order ID"  value="{{ txn_ref_no }}">
+      <button type="submit" class="btn btn-custon-four btn-danger" id="handshake" style="display: none;">Handshake</button>
+   </form>
+</body>
+<script type="text/javascript">
+    $(function () {
+        $("#handshake").click(function (e) {
+            e.preventDefault();
+            $("#handshake").attr('disabled', 'disabled');
+            submitRequest("HandshakeForm");
+            if ($("#HS_IsRedirectionRequest").val() == "1") {
+                document.getElementById("HandshakeForm").submit();
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ html_url }}",
+                    contentType: "application/x-www-form-urlencoded",
+                    data: myData,
+                    dataType: "json",
+                    beforeSend: function () {
+                    },
+                    success: function (r) {
+                        if (r != '') {
+                            if (r.success == "true") {
+                                $("#AuthToken").val(r.AuthToken);
+                                $("#ReturnURL").val(r.ReturnURL);
+                                alert('Success: Handshake Successful');
+                            }
+                            else
+                            {
+                                alert('Error: Handshake Unsuccessful');
+                            }
+                        }
+                        else
+                        {
+                            alert('Error: Handshake Unsuccessful');
+                        }
+                    },
+                    error: function (error) {
+                        alert('Error: An error occurred');
+                    },
+                    complete: function(data) {
+                        $("#handshake").removeAttr('disabled', 'disabled');
+                    }
+                });
+            }
+        });
+    });
+
+    function submitRequest(formName) {
+
+        var mapString = '', hashName = 'RequestHash';
+        if (formName == "HandshakeForm") {
+            hashName = 'HS_' + hashName;
+        }
+
+        $("#" + formName+" :input").each(function () {
+            if ($(this).attr('id') != '') {
+                mapString += $(this).attr('id') + '=' + $(this).val() + '&';
+            }
+        });
+
+        $("#" + hashName).val(CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(mapString.substr(0, mapString.length - 1)), CryptoJS.enc.Utf8.parse($("#Key1").val()),
+        {
+            keySize: 128 / 8,
+            iv: CryptoJS.enc.Utf8.parse($("#Key2").val()),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        }));
+    }
+
+    function submitForm()
+    {
+        $("#handshake").attr('disabled', 'disabled');
+        submitRequest("HandshakeForm");
+        if ($("#HS_IsRedirectionRequest").val() == "1") {
+            document.getElementById("HandshakeForm").submit();
+        }
+    }
+
+</script>

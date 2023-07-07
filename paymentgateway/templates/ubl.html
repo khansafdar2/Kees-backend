@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UBL</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--<style>-->
+        <!--.display-->
+    <!--</style>-->
+</head>
+<body>
+    <form action="{{action}}" method="post" name="frmPayment" id="jsform">
+
+    <input name="TransactionID" type="hidden" value="{{TransactionID}}" />
+    <input type='Hidden' name='Style' value='STL:18'/>
+
+    <!--<input name="btn_submit" type="submit" value="SUBMIT" id="submit" />-->
+    </form>
+</body>
+<script>
+$(document).ready(function(){
+    $("#jsform").submit()
+    // $("#submit").trigger("click");
+})
+// function submitForm()
+// {
+//   document.frmPayment.submit();
+// }
+</script>
+</html>

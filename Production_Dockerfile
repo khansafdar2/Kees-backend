@@ -1,0 +1,11 @@
+FROM --platform=linux/x86-64 python:3.6.9
+
+WORKDIR /usr/src/app
+COPY ../../requirements.txt ./
+ENV ENV kees
+RUN pip install -r requirements.txt
+COPY ../../../.. .
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "--settings=ecomm_app.settings.production", "0.0.0.0:8000"]

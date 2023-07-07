@@ -1,0 +1,82 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+<body onload="submitForm()">		
+	<input type="hidden" id="Salt" name="Salt" value="{{ integrity_Salt }}" placeholder="Enter secret key"\>
+	<form id="s2bpay-ctgry1-form" name="niftForm" action="{{ gateway_url }}" method="post"/>
+        <input type="hidden" id="pp_Version" name="pp_Version" value="{{ pp_Version }}"/>
+        <input type="hidden" id="pp_Language" name="pp_Language" value="EN"/>
+        <input type="hidden" id="pp_MerchantID" name="pp_MerchantID" value="{{ pp_MerchantID }}"/>
+        <input type="hidden" id="pp_Password" name="pp_Password" value="{{ pp_Password }}"/>
+        <input type="hidden" id="pp_SubMerchantID" name="pp_SubMerchantID" value="{{ pp_SubMerchantID }}"/>
+        <input type="hidden" id="integrity_Salt" name="integrity_Salt" value="{{ integrity_Salt }}"/>
+        <input type="hidden" id="pp_TxnRefNo" name="pp_TxnRefNo" value="{{ pp_TxnRefNo }}"/>
+        <input type="hidden" id="pp_Amount" name="pp_Amount" value="{{ pp_Amount }}"/>
+        <input type="hidden" id="pp_TxnDateTime" name="pp_TxnDateTime" value="{{ pp_TxnDateTime }}"/>
+        <input type="hidden" id="pp_TxnExpiryDateTime" name="pp_TxnExpiryDateTime" value="{{ pp_TxnExpiryDateTime }}"/>
+        <input type="hidden" id="pp_BillReference" name="pp_BillReference" value="{{ pp_BillReference }}"/>
+        <input type="hidden" id="pp_TxnCurrency" name="pp_TxnCurrency" value="{{ pp_TxnCurrency }}"/>
+        <input type="hidden" id="ppmpf_1" name="ppmpf_1" value=""/>
+        <input type="hidden" id="ppmpf_2" name="ppmpf_2" value=""/>
+        <input type="hidden" id="ppmpf_3" name="ppmpf_3" value=""/>
+        <input type="hidden" id="ppmpf_4" name="ppmpf_4" value=""/>
+        <input type="hidden" id="ppmpf_5" name="ppmpf_5" value=""/>
+        <input type="hidden" id="pp_SecureHash" name="pp_SecureHash" value="{{ pp_SecureHash }}"/>
+        <input type="hidden" id="pp_Description" name="pp_Description" value="{{ pp_Description }}"/>
+        <input type="hidden" id="pp_ReturnURL" name="pp_ReturnURL" value="{{ pp_ReturnURL }}"/>
+	</form>
+</body>
+<script>
+	
+	var x;
+	function Xero(x)
+	{
+		return x > 9 ? "" + x: "0" + x;
+	}
+	
+	function submitForm(){
+		calculateHash()
+		setTimeout(function() {
+			document.niftForm.submit();
+		}, 100);
+		
+	}
+	
+	function calculateHash(){
+		var inputs = { 
+			"pp_Amount": document.getElementById("pp_Amount").value,
+			"pp_BillReference": document.getElementById("pp_BillReference").value,
+			"pp_Description": document.getElementById("pp_Description").value,
+			"pp_Language": document.getElementById("pp_Language").value,
+			"pp_MerchantID": document.getElementById("pp_MerchantID").value,
+			"pp_Password": document.getElementById("pp_Password").value,
+			"pp_ReturnURL": document.getElementById("pp_ReturnURL").value,
+			"pp_SubMerchantID": document.getElementById("pp_SubMerchantID").value,
+			"pp_TxnCurrency": document.getElementById("pp_TxnCurrency").value,
+			"pp_TxnDateTime": document.getElementById("pp_TxnDateTime").value,
+			"pp_TxnExpiryDateTime": document.getElementById("pp_TxnExpiryDateTime").value,
+			"pp_TxnRefNo": document.getElementById("pp_TxnRefNo").value,
+			"pp_Version": document.getElementById("pp_Version").value,
+			"ppmpf_1": document.getElementById("ppmpf_1").value,
+			"ppmpf_2": document.getElementById("ppmpf_2").value,
+			"ppmpf_3": document.getElementById("ppmpf_3").value,
+			"ppmpf_4": document.getElementById("ppmpf_4").value,
+			"ppmpf_5": document.getElementById("ppmpf_5").value
+		}
+		
+		let orderedInputs = {};
+		let concatenatedString = document.getElementById("Salt").value;
+		
+		Object.keys(inputs).sort().forEach(key => { concatenatedString = !(inputs[key] === "" || inputs[key] == undefined) ? concatenatedString + "&" + inputs[key] : concatenatedString; });
+		
+		// console.log(concatenatedString);
+		var hash = CryptoJS.HmacSHA256(concatenatedString, document.getElementById("Salt").value);
+		var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+		
+		// console.log(hash.toString());
+		document.getElementById("pp_SecureHash").value = hash.toString();
+
+		return true;
+	}
+</script>
+
+
+

@@ -1,0 +1,142 @@
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import requests, random, json
+from datetime import datetime
+from datetime import timedelta
+from order.models import Checkout, ShippingAddress
+from ecomm_app.settings import staging as setting
+from setting.models import StoreInformation
+from paymentgateway.models import GatewayCredentials, PaymentTransactions
+
+
+@csrf_exempt
+def nift_view(request):
+    try:
+        store = StoreInformation.objects.get(deleted=False)
+    except Exception as e:
+        print(e)
+        return HttpResponse('Store not exist')
+
+    success_url = f"{setting.HOST_URL}/paymentgateway/nift_process_request"
+    failure_url = f"{setting.HOST_URL}/paymentgateway/nift_process_request"
+    order_place_url = f"{setting.HOST_URL}/order/place_order"
+    complete_url = f"{setting.STOREFRONT_URL}/thankyou"
+
+    checkout_id = request.GET.get('checkout_id')
+    if not checkout_id:
+        return redirect(failure_url)
+    else:
+        checkout = Checkout.objects.filter(checkout_id=checkout_id).first()
+
+    gateway_credentials = GatewayCredentials.objects.filter(gateway_name='nift', brand_name=store.store_name, is_active=True).first()
+    if not gateway_credentials:
+        return redirect(failure_url)
+
+    if gateway_credentials.test_mode:
+        gateway_url = "https://uat-merchants.niftepay.pk/CustomerPortal/transactionmanagement/merchantform"
+        gateway_credentials = gateway_credentials.credentials['test']
+    else:
+        gateway_url = "https://merchants.niftepay.pk/CustomerPortal/transactionmanagement/merchantform"
+        gateway_credentials = gateway_credentials.credentials['live']
+
+    merchant_version = gateway_credentials['MERCHANT_VERSION']
+    merchant_id = gateway_credentials['MERCHANT_ID']
+    merchant_password = gateway_credentials['MERCHANT_PASSWORD']
+    sub_merchant_id = gateway_credentials['SUBMERCHANT_ID']
+    integrity_salt = gateway_credentials['INTEGRITY_SALT']
+
+    current_time = datetime.now()
+    txn_ref_no = (str(random.randint(1000, 1000000)) + '-' + current_time.strftime("%Y-%m-%dT%H-%M-%S")).replace('-', '')
+
+    amount = float(checkout.subtotal_price) + float(checkout.total_shipping)
+
+    amount = round(float(amount))
+    expiry_time = current_time + timedelta(days=2)
+
+    customer = ShippingAddress.objects.filter(checkout__checkout_id=checkout_id).first()
+    PaymentTransactions.objects.create(checkout_id=checkout_id,
+                                       customer_first_name=customer.first_name,
+                                       customer_last_name=customer.last_name,
+                                       callback_url=order_place_url,
+                                       cancel_url=failure_url,
+                                       complete_url=complete_url,
+                                       currency=store.store_currency,
+                                       signature="",
+                                       order_amount=amount,
+                                       txn_ref_no=txn_ref_no,
+                                       expiry_time=expiry_time,
+                                       test_mode=gateway_credentials.test_mode)
+
+    context = {
+        "pp_Version": merchant_version,
+        "pp_MerchantID": merchant_id,
+        "pp_Password": merchant_password,
+        "pp_SubMerchantID": sub_merchant_id,
+        "integrity_Salt": integrity_salt,
+        "pp_TxnRefNo": txn_ref_no,
+        "pp_Amount": str(amount),
+        "pp_TxnDateTime": current_time.strftime("%Y%m%d%H%M%S"),
+        "pp_TxnExpiryDateTime": expiry_time.strftime("%Y%m%d%H%M%S"),
+        "pp_BillReference": str(txn_ref_no),
+        "pp_TxnCurrency": "PKR",
+        'ppmpf_1': "",
+        'ppmpf_2': "",
+        'ppmpf_3': "",
+        'ppmpf_4': "",
+        'ppmpf_5': "",
+        'pp_SecureHash': "",
+        "pp_Description": "Goods",
+        "gateway_url": gateway_url,
+        "pp_ReturnURL": success_url
+    }
+
+    return render(request, 'nift_request.html', context)
+
+
+@csrf_exempt
+def nift_process_request(request):
+    txn_ref_no = request.GET.get('pp_TxnRefNo')
+
+    try:
+        transaction = PaymentTransactions.objects.get(txn_ref_no=txn_ref_no)
+    except Exception as e:
+        print("Exception in retrieving transaction: " + str(e))
+        return redirect(f"{setting.STOREFRONT_URL}/checkout?error=Some Error Occured in retrieving transaction")
+
+    transaction.response_code = request.GET.get('pp_ResponseCode')
+    transaction.response_message = request.GET.get('response_message')
+    transaction.save()
+
+    if transaction.response_code == "000" and transaction.response_message == "Success":
+        transaction.transaction_status = "Success"
+        transaction.save()
+
+        payload = {
+            'checkout_id': transaction.checkout_id
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            'User-agent': 'Gecko/20100101 Firefox/12.0 Mozilla/5.0'
+        }
+
+        payload = json.dumps(payload)
+        response = requests.post(transaction.callback_url, data=payload, headers=headers)
+
+        order_id = (response.json())['order_id']
+
+        if response.status_code == 200:
+            transaction.order_status = 'Success'
+            transaction.save()
+            return redirect(f"{transaction.complete_url}/{order_id}")
+        elif response.status_code == 422:
+            transaction.order_status = 'Failed'
+            transaction.save()
+            return redirect(f"{transaction.cancel_url}?error={transaction.response_message}")
+    else:
+        transaction.transaction_status = "Success"
+        transaction.order_status = 'Failed'
+        transaction.save()
+        return redirect(f"{transaction.cancel_url}?error={transaction.response_message}")

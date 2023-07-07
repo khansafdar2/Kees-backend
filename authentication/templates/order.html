@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+</head>
+<body style="font-family: Helvetica, sans-serif;font-size: 13px;">
+  <div class=" container " style="max-width: 550px;margin: 60px auto;">
+    <div>
+      <div class=" top-bar " style="margin-bottom: 40px; width: 100%; overflow: hidden;">
+        <div style="width: 50%; float: left;">
+          <img src="https://d109eq6v2p18ca.cloudfront.net/products/product_images/logo (1) 1.png" alt="logo">
+        </div>
+        <div class=" order-no " style=" width: 50%; color: grey; text-align: right; float: left;">
+          Order No {{order_number}}
+        </div>
+      </div>
+    </div>
+    <div>
+      <div><h1 class=" text_thank " style="display: block;font-size: 24px;margin-block-start: 0.83em;margin-block-end: 0.83em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: normal;font-family: Helvetica, sans-serif;margin: 0 0 10px;">{{order_heading}}</h1></div>
+      <div class=" text_p " style="display: block;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;color: #777;line-height: 150%;font-size: 16px;margin: 0;"><p>{{description}}</p></div>
+    </div>
+    <div>
+      <a href="https://kees.qa/orderDetail/{{order_number}}" target="_blank"><button class=" button button2 " style="background-color: #ffc107;border: none;color: white;padding: 25px 32px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border-radius: 4px;margin-right: 20px;">View Order</button></a>
+      OR
+      <a href="https://kees.qa/" class=" link " target="_blank" style="margin-left: 5px;font-size: 16px;text-decoration: none;color: #ffc107;">Visit Store</a>
+    </div>
+    <h2 class=" order-summary " style="font-weight: normal;margin-top: 50px;">Order Summary</h2>
+      {{product_list}}
+
+    <div class=" billing " style="width: 100%;">
+     <div class="billing-width" style="width: 55%; float: right;">
+      <div class=" billing-total " style="display: flex;justify-content: space-between;font-size: 15px;align-items: center;">
+        <div style="width: 50%;"><p style="  margin: 5px 0; color: grey;">Subtotal</p></div>
+        <div  style="width: 50%;"><p class=" price-s " style="  margin: 5px 0; color: #555;font-weight: bold;font-size: 15px;">QAR. {{subtotal}}</p></div>
+      </div>
+      <div class=" billing-total " style="display: flex;justify-content: space-between;font-size: 15px;align-items: center;">
+        <div  style="width: 50%;"><p style="  margin: 5px 0; color: grey;">Shipping</p></div>
+        <div  style="width: 50%;"><p class=" price-s " style="  margin: 5px 0; color: #555;font-weight: bold;font-size: 15px;">QAR. {{shipping}}</p></div>
+      </div>
+      <hr>
+      <div class=" billing-total " style="display: flex;justify-content: space-between;font-size: 15px;align-items: center;">
+        <div  style="width: 50%;"><p style="  margin: 5px 0; color: grey;">Total</p></div>
+        <div  style="width: 50%;"><p class=" price-t " style="  margin: 5px 0; color: #555;font-weight: bold;font-size: 20px;">QAR. {{total_price}}</p></div>
+      </div>
+
+     </div>
+     <div style="clear: both;"></div>
+    </div>
+     <div>
+      <h2 style="font-weight: normal; margin-top: 50px!important;">Customer Information</h2>
+      <div class=" customer_infromation " style="font-weight: bold;font-size: 16px;color: #555;margin: 0 0 5px;display: flex;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;">
+      <div class=" shipping-info " style="width: 50%;">
+        <p><strong>Shipping address</strong></p>
+          <ul style="color: #777; font-weight: lighter; list-style: none;" class=" shipping-billing-list">
+            <li>{{shipping_address_name}}</li>
+            <li>{{shipping_address_address}}</li>
+            <li>{{shipping_address_city}}</li>
+            <li>{{shipping_address_country}}</li>
+          </ul>
+
+        <div class=" shipping-method " style="margin-top: 20px;">
+          <p><strong>Shipping method</strong></p>
+          <p style="color: #777; font-weight: lighter;">Standard</p>
+        </div>
+      </div>
+      <div class=" billing-info " style="display: inline-block;width: 50%;">
+        <p><strong>Billing address</strong></p>
+          <ul style="color: #777; font-weight: lighter; list-style: none;" class=" shipping-billing-list ">
+            <li>{{billing_address_name}}</li>
+            <li>{{billing_address_address}}</li>
+            <li>{{billing_address_city}}</li>
+            <li>{{billing_address_country}}</li>
+          </ul>
+
+        <div class=" payment-method " style="margin-top: 20px;">
+         <p><strong>Payment method</strong></p>
+          <p style="color: #777; font-weight: lighter;">{{payment_method}} — QAR. {{total_price}}</p>
+        </div>
+      </div>
+
+
+      </div>
+    </div>
+    <hr>
+    <div style="margin-top: 20px;margin-left: 5px;text-align: center;max-width: 550px;" class=" container ">
+    <p>If you have any questions, contact us at <a style="color: #ffc107;" href="mailto:contact@kees.qa">contact@kees.qa</a></p>
+    </div>
+
+</div></body>
+</html>
+
